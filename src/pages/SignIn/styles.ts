@@ -5,13 +5,13 @@ export const Container = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  padding: 0px 30px ${Platform.OS === 'android' ? 150 : 40}px;
+  padding: 120px 30px ${Platform.OS === 'android' ? 150 : 40}px;
 `;
 export const Title = styled.Text`
   font-size: 24px;
   color: #f4ede8;
   font-family: 'RobotoSlab-Medium';
-  margin: 25px 0 20px;
+  margin: 55px 0 20px;
 `;
 
 export const ForgotPassword = styled.TouchableOpacity`
@@ -40,7 +40,7 @@ export const CreateAccountButton = styled.TouchableOpacity`
 `;
 
 export const CreateAccountButtonText = styled.Text`
-  color: #ff9000;
+  color: #39ff14;
   font-size: 15px;
   font-family: 'RobotoSlab-Regular';
 `;
