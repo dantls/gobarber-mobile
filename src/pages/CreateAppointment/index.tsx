@@ -240,7 +240,7 @@ const AppointmentCreated: React.FC = () => {
             </SectionContent>
           </Section>
         </Schedule>
-        <CreateAppointmentButton onPress={() => handleCreateAppointment()}>
+        <CreateAppointmentButton onPress={handleCreateAppointment}>
           <CreateAppointmentButtonText>Agendar</CreateAppointmentButtonText>
         </CreateAppointmentButton>
       </Content>
