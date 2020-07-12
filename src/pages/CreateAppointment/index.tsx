@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import api from '../../services/api';
@@ -28,6 +28,8 @@ import {
   SectionContent,
   Hour,
   HourText,
+  CreateAppointmentButton,
+  CreateAppointmentButtonText,
 } from './styles';
 import { useAuth } from '../../hooks/auth';
 
@@ -48,6 +50,7 @@ interface AvalilabilityItem {
 const AppointmentCreated: React.FC = () => {
   const { user } = useAuth();
   const route = useRoute();
+  const { goBack, navigate } = useNavigation();
   const routeParams = route.params as RouteParams;
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -59,11 +62,7 @@ const AppointmentCreated: React.FC = () => {
     routeParams.providerId,
   );
 
-  const { goBack } = useNavigation();
-
-  const navigateBack = useCallback(() => {
-    goBack;
-  }, [goBack]);
+  const navigateBack = useCallback(() => goBack(), [goBack]);
 
   const handleSelectProvider = useCallback((providerId: string) => {
     setSelectedProviders(providerId);
@@ -78,10 +77,30 @@ const AppointmentCreated: React.FC = () => {
       }
       if (date) {
         setSelectedDate(date);
+        setSelectedHour(0);
       }
     },
     [],
   );
+
+  const handleCreateAppointment = useCallback(async () => {
+    try {
+      const date = new Date(selectedDate);
+      date.setHours(selectedHour);
+      date.setMinutes(0);
+
+      await api.post('appointments', {
+        provider_id: selectedProvider,
+        date,
+      });
+      navigate('AppointmentCreated', { date: date.getTime() });
+    } catch (error) {
+      Alert.alert(
+        'Erro ao criar agendamento',
+        'Ocorreu um erro ao criar o agendamento, tente novamente.',
+      );
+    }
+  }, [navigate, selectedProvider, selectedDate, selectedHour]);
 
   const handleSelectHour = useCallback((hour: number) => {
     setSelectedHour(hour);
@@ -221,6 +240,9 @@ const AppointmentCreated: React.FC = () => {
             </SectionContent>
           </Section>
         </Schedule>
+        <CreateAppointmentButton onPress={() => handleCreateAppointment()}>
+          <CreateAppointmentButtonText>Agendar</CreateAppointmentButtonText>
+        </CreateAppointmentButton>
       </Content>
     </Container>
   );
