@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Feather';
 
 import { Form } from '@unform/mobile';
 
@@ -12,8 +13,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  UserAvatarButton,
-  UserAvatar,
 } from 'react-native';
 
 import { FormHandles } from '@unform/core';
@@ -24,7 +23,13 @@ import getValidationErrors from '../../utils/getValidationErrors';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
-import { Container, Title } from './styles';
+import {
+  Container,
+  Title,
+  UserAvatar,
+  UserAvatarButton,
+  BackButton,
+} from './styles';
 
 interface ProfileFormData {
   name: string;
@@ -37,7 +42,9 @@ const Profile: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
   const emailInputRef = useRef<TextInput>(null);
+  const oldPasswordInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
+  const confirmPasswordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
 
   const handleProfile = useCallback(
@@ -75,6 +82,9 @@ const Profile: React.FC = () => {
     [navigation],
   );
 
+  const handleGoBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
   return (
     <>
       <KeyboardAvoidingView
@@ -87,6 +97,10 @@ const Profile: React.FC = () => {
           contentContainerStyle={{ flex: 1 }}
         >
           <Container>
+            <BackButton onPress={() => handleGoBack()}>
+              <Icon name="chevron-left" size={24} color="#999591" />
+            </BackButton>
+
             <UserAvatarButton onPress={() => {}}>
               <UserAvatar source={{ uri: user.avatar_url }} />
             </UserAvatarButton>
@@ -113,20 +127,21 @@ const Profile: React.FC = () => {
                 icon="mail"
                 placeholder="E-mail"
                 onSubmitEditing={() => {
-                  passwordInputRef.current?.focus();
+                  oldPasswordInputRef.current?.focus();
                 }}
                 returnKeyType="next"
               />
               <Input
-                ref={passwordInputRef}
+                ref={oldPasswordInputRef}
                 secureTextEntry
-                name="password"
+                name="old_password"
                 icon="lock"
-                placeholder="Senha"
+                placeholder="Senha atual"
                 textContentType="newPassword"
                 returnKeyType="send"
+                containerStyle={{ marginTop: 16 }}
                 onSubmitEditing={() => {
-                  formRef.current?.submitForm();
+                  passwordInputRef.current?.focus();
                 }}
               />
               <Input
@@ -134,19 +149,19 @@ const Profile: React.FC = () => {
                 secureTextEntry
                 name="password"
                 icon="lock"
-                placeholder="Senha"
+                placeholder="Nova senha"
                 textContentType="newPassword"
-                returnKeyType="send"
+                returnKeyType="next"
                 onSubmitEditing={() => {
-                  formRef.current?.submitForm();
+                  confirmPasswordInputRef.current?.focus();
                 }}
               />
               <Input
-                ref={passwordInputRef}
+                ref={confirmPasswordInputRef}
                 secureTextEntry
-                name="password"
+                name="password_Confirmation"
                 icon="lock"
-                placeholder="Senha"
+                placeholder="Confirmar nova senha"
                 textContentType="newPassword"
                 returnKeyType="send"
                 onSubmitEditing={() => {
