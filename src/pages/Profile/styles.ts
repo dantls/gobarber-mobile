@@ -24,6 +24,5 @@ export const UserAvatar = styled.Image`
   width: 140px;
   height: 140px;
   border-radius: 70px;
-
   align-self: center;
 `;
